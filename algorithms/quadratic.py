@@ -4,13 +4,13 @@ def scale(params):
     xTrain = params[0]
     yTrain = params[1]
     xValid  = params[2]
-    length = len(yTrain)
-    testLength = len(xValid)
+    trainLength = len(xTrain)
+    validLength = len(xValid)
     terms = termBuilder(xTrain[0])
     count = len(terms)
 
-    xTrain = featureBuilder(xTrain, terms, count, length)
-    xValid  = featureBuilder(xValid, terms, count, testLength)
+    xTrain = featureBuilder(xTrain, terms, count, trainLength)
+    xValid = featureBuilder(xValid, terms, count, validLength)
     
     return [xTrain, yTrain, xValid]
 
@@ -31,3 +31,11 @@ def featureBuilder(X, terms, count, length):
             p *= X[:,terms[i][1]]
         newX[:,i] = p
     return newX
+
+def testScale(xTest):
+    terms = termBuilder(xTest[0])
+    count = len(terms)
+    testLength = len(xTest)
+    xTest = featureBuilder(xTest, terms, count, testLength)
+
+    return xTest

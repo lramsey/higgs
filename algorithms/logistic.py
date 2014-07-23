@@ -1,18 +1,22 @@
 from sklearn import linear_model as lm
+import __init__ as i
 
-logistic = None
+logis = None
 
-def logistic(params, norm=1):
+def train(params, norm=1):
     xTrain = params[0]
     yTrain = params[1]
     xValid  = params[2]
-    outputs = []
-    global logistic
-    logistic = lm.LogisticRegression(C=norm)
-    logistic.fit(xTrain,yTrain)
-    outputs.append(logistic.predict_proba(xTrain)[:,1])
-    outputs.append(logistic.predict_proba(xValid)[:,1])
-    return outputs
+    global logis
+    logis = lm.LogisticRegression(C=norm)
+    logis.fit(xTrain,yTrain)
+    trainResults = logis.predict_proba(xTrain)[:,1]
+    validResults = logis.predict_proba(xValid)[:,1]
+
+    i.setSuccess(trainResults)
+    return i.formatOutputs([trainResults, validResults])
 
 def test(xTest):
-    return logistic.predict_proba(xTest)[:,1]
+    testResults = logis.predict_proba(xTest)[:,1]
+    testClassification = i.formatOutputs([testResults])[0]
+    return [testClassification, testResults]

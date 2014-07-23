@@ -26,7 +26,7 @@ def readTestData():
     return [xTest, indexTest]
 
 def writeTestResults(resultList):
-    fcsv = open('results/Kaggle_higgs_prediction_output300.csv','w')
+    fcsv = open('results/Kaggle_higgs_prediction_outputGrad50.csv','w')
     fcsv.write('EventId,RankOrder,Class\n')
     for line in resultList:
         theline = str(line[0])+','+str(line[1])+','+line[2]+'\n'

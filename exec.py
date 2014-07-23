@@ -21,12 +21,9 @@ wValid = trainingData[5]
 
 outputs = a.train(method, scale, [xTrain, yTrain, xValid])
 
-trainResults = outputs[0]
-validResults = outputs[1]
+trainClassifications = outputs[0]
+validClassifications = outputs[1]
 
-success      = np.percentile(trainResults, 85)
-trainClassifications = trainResults  > success
-validClassifications = validResults  > success
 # focus analysis in predicted signal region
 
 scaledTrainWins   = wTrain * (yTrain  == 1.0)*(1.0/0.9)
@@ -61,10 +58,9 @@ testData  = e.readTestData()
 xTest     = testData[0]
 indexTest = testData[1]
 
-testResults = a.test(method, scale, xTest)
-
-testClassifications = testResults > success
-testResults = list(testResults)
+results = a.test(method, scale, xTest)
+testClassifications = results[0]
+testResults = list(results[1])
 
 
 resultList = []
