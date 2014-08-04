@@ -4,11 +4,14 @@ import algorithms.randomForest      as f
 import algorithms.svm               as s
 import algorithms.adaboost          as ada
 import algorithms.gradientBoosting  as g
+import algorithms.neural            as neural
 
 def train(method, scale, params):
     outputs = []
     if scale == 'quadratic':
         params = quad.scale(params)
+    elif scale == 'neural':
+        params = neural.scale(params)
     if method == 'logistic':
         outputs = log.train(params)
     elif method == 'forest':
@@ -27,6 +30,8 @@ def test(method, scale, xTest):
     outputs = []
     if scale == 'quadratic':
         xTest = quad.testScale(xTest)
+    elif scale == 'neural':
+        xTest = neural.testScale(xTest)
     if method == 'logistic':
         outputs = log.test(xTest)
     elif method == 'forest':
