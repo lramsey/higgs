@@ -1,61 +1,58 @@
-import math
+# import math
 import argparse
-import numpy     as np
 import algorithm as a
 import editing   as e
-from sklearn.metrics import classification_report
+# from sklearn.metrics import classification_report
 
 parser = argparse.ArgumentParser()
 parser.add_argument('method')
 parser.add_argument('scale', nargs='?')
 args = parser.parse_args()
 method = args.method
+# methods = [method]
+# methods = ast.literal_eval(args.methods)
 scale = args.scale
 
 trainingData = e.readTrainingData()
-xTrain = trainingData[0]
-yTrain = trainingData[1]
-wTrain = trainingData[2]
-xValid = trainingData[3]
-yValid = trainingData[4]
-wValid = trainingData[5]
+xTrain       = trainingData[0]
+yTrain       = trainingData[1]
+wTrain       = trainingData[2]
+xCrossValid  = trainingData[3]
+yCrossValid  = trainingData[4]
+wCrossValid  = trainingData[5]
+xTestValid   = trainingData[6]
+yTestValid   = trainingData[7]
+wTestValid   = trainingData[8]
 
-outputs = a.train(method, scale, [xTrain, yTrain, xValid])
+params = [xTrain, yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid]
+print a.train(method, scale, params)
 
-trainClassifications = outputs[0]
-validClassifications = outputs[1]
-print classification_report(yTrain, trainClassifications)
-print classification_report(yValid, validClassifications)
+# trainClassifications = outputs[0]
+# crossValidClassifications = outputs[1]
+# print classification_report(yTrain, trainClassifications)
+# print classification_report(yCrossValid, crossValidClassifications)
 
 
-# focus analysis in predicted signal region
+# # focus analysis in predicted signal region
 
-scaledTrainWins   = wTrain * (yTrain  == 1.0)*(1.0/0.9)
-scaledTrainLosses = wTrain * (yTrain  == 0.0)*(1.0/0.9)
-scaledValidWins   = wValid * (yValid  == 1.0)*(1.0/0.1)
-scaledValidLosses = wValid * (yValid  == 0.0)*(1.0/0.1)
+# scaledTrainWins   = wTrain * (yTrain  == 1.0)*(1.0/0.6)
+# scaledTrainLosses = wTrain * (yTrain  == 0.0)*(1.0/0.6)
+# scaledCrossValidWins   = wCrossValid * (yCrossValid  == 1.0)*(1.0/0.2)
+# scaledCrossValidLosses = wCrossValid * (yCrossValid  == 0.0)*(1.0/0.2)
 
-sTrain  = sum (scaledTrainWins   *(trainClassifications == 1.0))
-bTrain  = sum (scaledTrainLosses *(trainClassifications == 1.0))
-sValid  = sum (scaledValidWins   *(validClassifications == 1.0))
-bValid  = sum (scaledValidLosses *(validClassifications == 1.0))
+# sTrain  = sum (scaledTrainWins   *(trainClassifications == 1.0))
+# bTrain  = sum (scaledTrainLosses *(trainClassifications == 1.0))
+# sCrossValid  = sum (scaledCrossValidWins   *(crossValidClassifications == 1.0))
+# bCrossValid  = sum (scaledCrossValidLosses *(crossValidClassifications == 1.0))
 
-def AMS(s,b):
-    return math.sqrt(2.*((s+b+10.)*math.log(1.+ s/(b+10.) )-s ))
+# def AMS(s,b):
+#     return math.sqrt(2.*((s+b+10.)*math.log(1.+ s/(b+10.) )-s ))
 
-trainScore = AMS(sTrain,bTrain)
-testScore  = AMS(sValid, bValid)
-print '90% training score: ' + str(trainScore)
-print '10% testing score: ' + str(testScore)
+# trainScore = AMS(sTrain,bTrain)
+# testScore  = AMS(sCrossValid, bCrossValid)
+# print '90% training score: ' + str(trainScore)
+# print '10% testing score: ' + str(testScore)
 
-n = sValid + bValid
-
-def zScore(n,b):
-    return math.sqrt( 2 * (n * math.log(n/b)-n + b))
-
-Z = zScore(n, bValid)
-
-print 'Z: ' + str(Z)
 
 # testData  = e.readTestData()
 # xTest     = testData[0]

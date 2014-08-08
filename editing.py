@@ -7,20 +7,35 @@ def readTrainingData():
     allX = data[:, 1:31]
     allW = data[:, 31]
     
-    # scale = MMS()
-    # allX = scale.fit_transform(allX)
+    scale = MMS()
+    allX = scale.fit_transform(allX)
     np.random.seed(42)
     r = np.random.rand(allY.shape[0])
 
-    yTrain = allY[r<=0.4]
-    xTrain = allX[r<=0.4]
-    wTrain = allW[r<=0.4]
+    xTrain = allX[r<=0.6]
+    yTrain = allY[r<=0.6]
+    wTrain = allW[r<=0.6]
 
-    yValid = allY[r>=0.9]
-    xValid = allX[r>=0.9]
-    wValid = allW[r>=0.9]
+    xValid = allX[r>0.6]
+    yValid = allY[r>0.6]
+    wValid = allW[r>0.6]
     
-    return [xTrain, yTrain, wTrain, xValid, yValid, wValid]
+    # yCrossValid = yValid
+    # xCrossValid = xValid
+    # wCrossValid = wValid
+
+    v = np.random.rand(yValid.shape[0])
+    xCrossValid = xValid[v<=0.5]
+    yCrossValid = yValid[v<=0.5]
+    wCrossValid = wValid[v<=0.5]
+
+    xTestValid  = xValid[v>0.5]
+    yTestValid  = yValid[v>0.5]
+    wTestValid  = wValid[v>0.5]
+    
+    # return [xTrain, yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid]
+    return [xTrain, yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid, xTestValid, yTestValid, wTestValid]
+
 
 def readTestData():
     testData  = np.loadtxt('data/test.csv', delimiter=',', skiprows=1)
