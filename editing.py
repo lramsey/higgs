@@ -12,17 +12,13 @@ def readTrainingData():
     np.random.seed(42)
     r = np.random.rand(allY.shape[0])
 
-    xTrain = allX[r<=0.6]
-    yTrain = allY[r<=0.6]
-    wTrain = allW[r<=0.6]
+    xTrain = allX[r<=0.2]
+    yTrain = allY[r<=0.2]
+    wTrain = allW[r<=0.2]
 
-    xValid = allX[r>0.6]
-    yValid = allY[r>0.6]
-    wValid = allW[r>0.6]
-    
-    # yCrossValid = yValid
-    # xCrossValid = xValid
-    # wCrossValid = wValid
+    xValid = allX[r>0.9]
+    yValid = allY[r>0.9]
+    wValid = allW[r>0.9]
 
     v = np.random.rand(yValid.shape[0])
     xCrossValid = xValid[v<=0.5]
@@ -33,7 +29,6 @@ def readTrainingData():
     yTestValid  = yValid[v>0.5]
     wTestValid  = wValid[v>0.5]
     
-    # return [xTrain, yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid]
     return [xTrain, yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid, xTestValid, yTestValid, wTestValid]
 
 

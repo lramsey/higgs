@@ -1,16 +1,14 @@
-# import math
 import argparse
 import algorithm as a
 import editing   as e
-# from sklearn.metrics import classification_report
+import numpy     as np
+import matplotlib.pyplot as plt
 
 parser = argparse.ArgumentParser()
 parser.add_argument('method')
 parser.add_argument('scale', nargs='?')
 args = parser.parse_args()
 method = args.method
-# methods = [method]
-# methods = ast.literal_eval(args.methods)
 scale = args.scale
 
 trainingData = e.readTrainingData()
@@ -24,34 +22,68 @@ xTestValid   = trainingData[6]
 yTestValid   = trainingData[7]
 wTestValid   = trainingData[8]
 
-params = [xTrain, yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid]
-print a.train(method, scale, params)
+metric = 91
+print 'cross-validation'
+# use keyword args
+cvScores    = []
+trainScores = []
+trees = range(50, 1000, 50)
+high = [0, -1]
+params = [yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid]
+for i in range(0, len(trees)):
+    tree = trees[i]
+    a.train(method, xTrain, yTrain, tree, metric)
+    score = a.crossValidate(method, params)
 
-# trainClassifications = outputs[0]
-# crossValidClassifications = outputs[1]
-# print classification_report(yTrain, trainClassifications)
-# print classification_report(yCrossValid, crossValidClassifications)
+    trainScore = score[0]
+    cvScore    = score[1]
+
+    trainScores.append(trainScore)
+    cvScores.append(cvScore)
+    if cvScore > high[0]:
+        high = [cvScore, tree]
+
+print 'winrar:' + str(high)
+winrar = high[1]
+params =[xTestValid, yTestValid, wTestValid]
+a.train(method, xTrain, yTrain, tree, metric)
+test = a.test(method, params)
+
+plt.plot(trees, trainScores)
+plt.plot(trees, cvScores)
+plt.show()
 
 
-# # focus analysis in predicted signal region
 
-# scaledTrainWins   = wTrain * (yTrain  == 1.0)*(1.0/0.6)
-# scaledTrainLosses = wTrain * (yTrain  == 0.0)*(1.0/0.6)
-# scaledCrossValidWins   = wCrossValid * (yCrossValid  == 1.0)*(1.0/0.2)
-# scaledCrossValidLosses = wCrossValid * (yCrossValid  == 0.0)*(1.0/0.2)
 
-# sTrain  = sum (scaledTrainWins   *(trainClassifications == 1.0))
-# bTrain  = sum (scaledTrainLosses *(trainClassifications == 1.0))
-# sCrossValid  = sum (scaledCrossValidWins   *(crossValidClassifications == 1.0))
-# bCrossValid  = sum (scaledCrossValidLosses *(crossValidClassifications == 1.0))
 
-# def AMS(s,b):
-#     return math.sqrt(2.*((s+b+10.)*math.log(1.+ s/(b+10.) )-s ))
 
-# trainScore = AMS(sTrain,bTrain)
-# testScore  = AMS(sCrossValid, bCrossValid)
-# print '90% training score: ' + str(trainScore)
-# print '10% testing score: ' + str(testScore)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # testData  = e.readTestData()

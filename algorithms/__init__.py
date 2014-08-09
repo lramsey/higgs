@@ -4,9 +4,9 @@ from sklearn.metrics import classification_report
 
 success = None
 
-def setSuccess(train):
+def setSuccess(train, metric):
     global success
-    success = np.percentile(train, 85)
+    success = np.percentile(train, metric)
 
 def formatOutputs(arr):
     length = len(arr)
@@ -32,16 +32,15 @@ def score(y, w, classifications, ratio):
     score = AMS(s,b)
     return score
 
-    
 def cvTrainScores(yTrain, wTrain, trainClassifications, yCrossValid, wCrossValid, crossValidClassifications):
-    trainScore    = score(yTrain, wTrain, trainClassifications, 0.6)
-    cvScore       = score(yCrossValid, wCrossValid, crossValidClassifications, 0.2)
+    trainScore    = score(yTrain, wTrain, trainClassifications, 0.2)
+    cvScore       = score(yCrossValid, wCrossValid, crossValidClassifications, 0.05)
     print classification_report(yTrain, trainClassifications)
     print classification_report(yCrossValid, crossValidClassifications)
     
     print '60% training score: ' + str(trainScore)
     print '20% cross-validation score: ' + str(cvScore)
-    return cvScore
+    return [trainScore, cvScore]
 
 def testScores(yTest, wTest, testClassifications):
     testScore = score(yTest, wTest, testClassifications, 0.2)
