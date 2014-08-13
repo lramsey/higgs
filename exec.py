@@ -27,48 +27,30 @@ print 'cross-validation'
 # use keyword args
 cvScores    = []
 trainScores = []
-trees = range(50, 1000, 50)
 high = [0, -1]
 params = [yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid]
-for i in range(0, len(trees)):
-    tree = trees[i]
-    a.train(method, xTrain, yTrain, tree, metric)
+methods = ['logistic', 'forest']
+for i in range(0, len(methods)):
+    method = methods[i]
+    a.train(method, xTrain, yTrain, metric)
     score = a.crossValidate(method, params)
-
     trainScore = score[0]
     cvScore    = score[1]
 
     trainScores.append(trainScore)
     cvScores.append(cvScore)
     if cvScore > high[0]:
-        high = [cvScore, tree]
+        high = [cvScore, method]
 
 print 'winrar:' + str(high)
 winrar = high[1]
 params =[xTestValid, yTestValid, wTestValid]
-a.train(method, xTrain, yTrain, tree, metric)
+a.train(method, xTrain, yTrain, winrar, metric)
 test = a.test(method, params)
 
-plt.plot(trees, trainScores)
-plt.plot(trees, cvScores)
-plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# plt.plot()
+# plt.plot()
+# plt.show()
 
 
 

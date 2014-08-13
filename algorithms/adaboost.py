@@ -1,22 +1,27 @@
+from sklearn.ensemble import AdaBoostClassifier
 import __init__ as i
-from sklearn import ensemble as e
 
-boost = None
+boost        = None
+trainResults = None
 
-def train(params):
-    xTrain = params[0]
-    yTrain = params[1]
-    xValid = params[2]
+def train(xTrain, yTrain, metric):
+    print 'adaboost'
     global boost
-    boost = e.AdaBoostClassifier(n_estimators=400)
-    boost.fit(xTrain, yTrain)
+    boost = AdaBoostClassifier()
+    boost.fit(xTrain,yTrain)
+    global trainResults
     trainResults = boost.predict_proba(xTrain)[:,1]
-    validResults = boost.predict_proba(xValid)[:,1]
+    i.setSuccess(trainResults, metric)
 
-    i.setSuccess(trainResults)
-    return i.formatOutputs([trainResults, validResults])
+def crossValidate(yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid):
+    crossValidResults = boost.predict_proba(xCrossValid)[:,1]
+    results = i.formatOutputs([trainResults, crossValidResults])
+    trainClassifications = results[0]
+    crossValidClassifications = results[1]
+    return i.cvTrainScores(yTrain, wTrain, trainClassifications, yCrossValid, wCrossValid, crossValidClassifications)
 
-def test(xTest):
+def test(xTest, yTest, wTest):
     testResults = boost.predict_proba(xTest)[:,1]
-    testClassification = i.formatOutputs([testResults])[0]
-    return [testClassification, testResults]
+    testClassifications = i.formatOutputs([testResults])[0]    
+    return i.testScore(yTest, wTest, testClassifications)
+

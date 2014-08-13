@@ -4,10 +4,10 @@ import __init__ as i
 gboost       = None
 trainResults = None
 
-def train(xTrain, yTrain, tree, metric):
-    print 'tree: ' + str(tree)
+def train(xTrain, yTrain, metric):
+    print 'goosting'
     global gboost
-    gboost = GBC(n_estimators=tree)
+    gboost = GBC()
     gboost.fit(xTrain,yTrain)
     global trainResults
     trainResults = gboost.predict_proba(xTrain)[:,1]
@@ -23,5 +23,5 @@ def crossValidate(yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid):
 def test(xTest, yTest, wTest):
     testResults = gboost.predict_proba(xTest)[:,1]
     testClassifications = i.formatOutputs([testResults])[0]    
-    return i.testScores(yTest, wTest, testClassifications)
+    return i.testScore(yTest, wTest, testClassifications)
 

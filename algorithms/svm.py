@@ -1,19 +1,26 @@
-from sklearn import svm as s
+from sklearn.svm import SVC
+import __init__ as i
 
-vector = None
+vector       = None
+trainResults = None
 
-def train(params):
-    xTrain = params[0]
-    yTrain = params[1]
-    xValid = params[2]
-
+def train(xTrain, yTrain, metric):
+    print 'svm'
     global vector
-    vector = s.SVC()
+    vector = SVC()
     vector.fit(xTrain, yTrain)
+    global trainResults
     trainResults = vector.predict(xTrain)
-    testResults  = vector.predict(xValid)
-    return [trainResults, testResults]
+    i.setSuccess(trainResults, metric)
 
-def test(xTest):
-    testClassification = vector.predict(xTest)
-    return [testClassification, testClassification]
+def crossValidate(yTrain, wTrain, xCrossValid, yCrossValid, wCrossValid):
+    crossValidResults = vector.predict_proba(xCrossValid)[:,1]
+    results = i.formatOutputs([trainResults, crossValidResults])
+    trainClassifications = results[0]
+    crossValidClassifications = results[1]
+    return i.cvTrainScores(yTrain, wTrain, trainClassifications, yCrossValid, wCrossValid, crossValidClassifications)
+
+def test(xTest, yTest, wTest):
+    testResults = vector.predict_proba(xTest)[:,1]
+    testClassifications = i.formatOutputs([testResults])[0]    
+    return i.testScore(yTest, wTest, testClassifications)
